@@ -59,25 +59,34 @@ function App() {
 
   return (
     <main className="app-shell">
-      <div className="scanline" aria-hidden="true" />
-      <Header route={route} navigate={navigate} />
-      {route === '/terminal' && (
-        <TerminalPage
-          activePack={activePack}
-          copyStatus={copyStatus}
-          issued={issued}
-          issuePack={issuePack}
-          navigate={navigate}
-          openCoopro={() => setCooproOpen(true)}
-          setCopyStatus={setCopyStatus}
-        />
-      )}
-      {route === '/data-not-product' && <DataNotProductPage navigate={navigate} />}
-      {route === '/about' && <AboutPage />}
-      {route === '/privacy' && <PrivacyPage />}
-      {route === '/terms' && <TermsPage />}
-      <Footer navigate={navigate} />
-      {cooproOpen && <CooproModal close={() => setCooproOpen(false)} />}
+      <div className="arcade-cabinet">
+        <div className="cabinet-rivet rivet-a" aria-hidden="true" />
+        <div className="cabinet-rivet rivet-b" aria-hidden="true" />
+        <div className="cabinet-rivet rivet-c" aria-hidden="true" />
+        <div className="cabinet-rivet rivet-d" aria-hidden="true" />
+        <div className="cabinet-marquee" aria-hidden="true">
+          <span>TERMINAL</span>
+          <small>TOKEN ACCESS CABINET</small>
+        </div>
+        <Header route={route} navigate={navigate} />
+        {route === '/terminal' && (
+          <TerminalPage
+            activePack={activePack}
+            copyStatus={copyStatus}
+            issued={issued}
+            issuePack={issuePack}
+            navigate={navigate}
+            openCoopro={() => setCooproOpen(true)}
+            setCopyStatus={setCopyStatus}
+          />
+        )}
+        {route === '/data-not-product' && <DataNotProductPage navigate={navigate} />}
+        {route === '/about' && <AboutPage />}
+        {route === '/privacy' && <PrivacyPage />}
+        {route === '/terms' && <TermsPage />}
+        <Footer navigate={navigate} />
+        {cooproOpen && <CooproModal close={() => setCooproOpen(false)} />}
+      </div>
     </main>
   )
 }
@@ -123,26 +132,53 @@ function TerminalPage({
   setCopyStatus: (status: string) => void
 }) {
   const selectedPack = activePack ?? packs[0]
+  const tokenCount = issued?.codes.length ?? 0
 
   return (
-    <>
-      <section className="hero-panel" aria-labelledby="terminal-title">
-        <div className="boot-card">
-          <p className="system-line">BOOT SEQUENCE READY</p>
-          <h1 id="terminal-title">TERMINAL</h1>
-          <p className="subtitle">FIELD REPORT ACCESS UNIT</p>
-          <div className="meters" aria-label="Compteurs de données personnelles">
-            <span>PERSONAL DATA REQUESTED: 0</span>
-            <span>PERSONAL DATA STORED: 0</span>
-            <span>PROFILES CREATED: 0</span>
-            <span>DATA SOLD: 0</span>
-          </div>
-        </div>
-        <div className="notice-panel">
-          <p>Les codes sont des codes d’usage unique destinés à une demande de transmission dans Coopro.</p>
-          <p>Un code déjà utilisé ne peut pas être réactivé.</p>
-          <p>Le Terminal ne crée aucun compte et ne conserve aucune donnée personnelle.</p>
-          <p>Mode démonstration : aucun paiement, aucune délivrance de code réel et aucune transmission réelle.</p>
+    <div className={issued ? 'terminal-page is-issued' : 'terminal-page'}>
+      <section className="crt-shell" aria-label="Écran arcade terminal">
+        <div className="crt-glass">
+          <div className="pixel-grid" aria-hidden="true" />
+          <section className="hero-panel" aria-labelledby="terminal-title">
+            <div className="boot-card">
+              <p className="system-line">INSERT FIELD CREDIT</p>
+              <h1 id="terminal-title">TERMINAL</h1>
+              <p className="subtitle">FIELD REPORT ACCESS UNIT</p>
+              <div className="meters" aria-label="Compteurs de données personnelles">
+                <span>PERSONAL DATA REQUESTED: 0</span>
+                <span>PERSONAL DATA STORED: 0</span>
+                <span>PROFILES CREATED: 0</span>
+                <span>DATA SOLD: 0</span>
+              </div>
+            </div>
+            <div className="notice-panel">
+              <p>Les codes sont des codes d’usage unique destinés à une demande de transmission dans Coopro.</p>
+              <p>Un code déjà utilisé ne peut pas être réactivé.</p>
+              <p>Le Terminal ne crée aucun compte et ne conserve aucune donnée personnelle.</p>
+              <p>Mode démonstration : aucun paiement, aucune délivrance de code réel et aucune transmission réelle.</p>
+            </div>
+          </section>
+
+          <section className="output-panel" aria-live="polite" aria-label="Sortie terminal">
+            <div className="output-head">
+              <div>
+                <p className="system-line">CARTRIDGE OUTPUT</p>
+                <h2>{selectedPack.title}</h2>
+              </div>
+              <span className="status-chip">{issued ? 'COOPRO READY' : 'STANDBY'}</span>
+            </div>
+            <TokenStats count={tokenCount} issued={Boolean(issued)} pack={selectedPack} />
+            <BootSequence lines={selectedPack.sequence} active={Boolean(issued)} />
+            {issued && (
+              <IssuedCodes
+                copyStatus={copyStatus}
+                issued={issued}
+                openCoopro={openCoopro}
+                setCopyStatus={setCopyStatus}
+              />
+            )}
+          </section>
+          <div className="ticket-slot" aria-hidden="true" />
         </div>
       </section>
 
@@ -151,26 +187,38 @@ function TerminalPage({
           <PackCard key={pack.kind} pack={pack} issuePack={issuePack} navigate={navigate} />
         ))}
       </section>
+    </div>
+  )
+}
 
-      <section className="output-panel" aria-live="polite" aria-label="Sortie terminal">
-        <div className="output-head">
-          <div>
-            <p className="system-line">OUTPUT BAY</p>
-            <h2>{selectedPack.title}</h2>
-          </div>
-          <span className="status-chip">{issued ? 'ISSUED' : 'STANDBY'}</span>
-        </div>
-        <BootSequence lines={selectedPack.sequence} active={Boolean(issued)} />
-        {issued && (
-          <IssuedCodes
-            copyStatus={copyStatus}
-            issued={issued}
-            openCoopro={openCoopro}
-            setCopyStatus={setCopyStatus}
-          />
-        )}
-      </section>
-    </>
+function TokenStats({
+  count,
+  issued,
+  pack,
+}: {
+  count: number
+  issued: boolean
+  pack: PackDefinition
+}) {
+  return (
+    <dl className="token-stats" aria-label="État des tokens">
+      <div>
+        <dt>TOKENS ISSUED</dt>
+        <dd>{count.toString().padStart(2, '0')}</dd>
+      </div>
+      <div>
+        <dt>TOKENS REMAINING</dt>
+        <dd>{issued ? '00' : pack.count.toString().padStart(2, '0')}</dd>
+      </div>
+      <div>
+        <dt>ACCESS VALUE</dt>
+        <dd>{pack.kind === 'paid' ? '10 EUR' : 'FREE'}</dd>
+      </div>
+      <div>
+        <dt>COOPRO READY</dt>
+        <dd>{issued ? 'YES' : 'NO'}</dd>
+      </div>
+    </dl>
   )
 }
 
@@ -248,8 +296,9 @@ function IssuedCodes({
     <div className="issued-panel">
       <p className="warning">Conservez vos codes. Aucun compte. Aucune récupération.</p>
       <ul className="code-list">
-        {issued.codes.map((code) => (
+        {issued.codes.map((code, index) => (
           <li key={code}>
+            <span>TOKEN {String(index + 1).padStart(2, '0')}</span>
             <code>{code}</code>
           </li>
         ))}

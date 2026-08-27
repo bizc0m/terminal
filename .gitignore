@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 terminal-*.png
+arcade-*.png
 
 # Editor directories and files
 .vscode/*

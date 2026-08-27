@@ -24,6 +24,18 @@ describe('Terminal app', () => {
     })
   })
 
+  it('shows arcade token stats and token labels after issuing', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'OBTENIR LE PACK' }))
+
+    expect(screen.getByText('TOKENS ISSUED')).toBeInTheDocument()
+    expect(screen.getByText('TOKEN 01')).toBeInTheDocument()
+    expect(screen.getByText('DEMO-01-5CKS-NV4B-7EMU')).toBeInTheDocument()
+    expect(screen.getAllByText('COOPRO READY').length).toBeGreaterThan(0)
+  })
+
   it('routes internal pages through hashes on GitHub Pages', async () => {
     const user = userEvent.setup()
     render(<App />)

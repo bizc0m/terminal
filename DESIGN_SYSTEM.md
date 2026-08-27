@@ -2,7 +2,7 @@
 
 ## Direction
 
-TERMINAL utilise un langage rétro-futuriste industriel : borne murale, écran CRT, typographie monospace, lignes techniques et contraste phosphore. Le rendu évite tout logo, symbole, nom ou interface protégée d’un jeu existant.
+TERMINAL utilise un langage arcade industriel : coque de borne physique, écran CRT pixelisé, typographie monospace, lignes techniques et contraste phosphore. Le rendu évite tout logo, symbole, nom ou interface protégée d’un jeu existant.
 
 ## Palette
 
@@ -28,20 +28,23 @@ Aucune police externe n’est appelée en production.
 
 ## Composants
 
-- `brand` : bouton de retour au terminal, aspect plaque de machine.
-- `pack-card` : module d’offre, bordure fine et fond CRT.
-- `output-panel` : baie de sortie, séquence système et ticket virtuel.
-- `primary-action` : bouton phosphore, fort contraste.
-- `secondary-action` : bouton sombre à bord phosphore.
+- `arcade-cabinet` : coque de borne avec rivets, cadre métallique et marquee.
+- `crt-shell` / `crt-glass` : écran rétro avec bombé visuel, grille pixel et scanlines.
+- `pack-card` : module d’offre placé sur le deck de commandes.
+- `output-panel` : baie de sortie cartridge, séquence système et tokens.
+- `token-stats` : panneaux dédiés `TOKENS ISSUED`, `TOKENS REMAINING`, `ACCESS VALUE`, `COOPRO READY`.
+- `primary-action` : bouton arcade phosphore avec relief mécanique.
+- `secondary-action` : bouton arcade ambre avec relief mécanique.
 - `modal-panel` : handoff Coopro sans URL contenant les codes.
 
-Les coins restent presque carrés (`2px`) pour garder l’esthétique industrielle.
+La coque et les boutons utilisent des arrondis contrôlés pour évoquer une borne physique, tandis que l’écran et les tickets gardent des lignes pixel/CRT plus strictes.
 
 ## Animations
 
-- Apparition ligne par ligne des séquences terminal.
-- Feedback tactile sur les boutons.
-- Overlay scanline fixe.
+- Apparition ligne par ligne des séquences de boot jeu vidéo.
+- Impression courte des tickets token.
+- Feedback tactile sur les boutons arcade.
+- Grille pixel et scanlines fixes.
 - Respect de `prefers-reduced-motion` : les animations sont quasi instantanées quand la réduction de mouvement est demandée.
 
 ## Ton
