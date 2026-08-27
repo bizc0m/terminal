@@ -21,6 +21,9 @@ const routes: Route[] = ['/terminal', '/data-not-product', '/about', '/privacy',
 const basePath = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/$/, '')
 
 function getRoute(): Route {
+  const hashRoute = window.location.hash.replace(/^#/, '').replace(/\/$/, '')
+  if (routes.includes(hashRoute as Route)) return hashRoute as Route
+
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/terminal'
   const path =
     basePath && currentPath.startsWith(basePath)
@@ -31,9 +34,8 @@ function getRoute(): Route {
 }
 
 function pathForRoute(route: Route): string {
-  if (!basePath) return route
-  if (route === '/terminal') return `${basePath}/`
-  return `${basePath}${route}`
+  if (!basePath) return `#${route}`
+  return `${basePath}/#${route}`
 }
 
 function App() {

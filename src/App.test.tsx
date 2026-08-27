@@ -1,9 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 
 describe('Terminal app', () => {
+  beforeEach(() => {
+    window.history.pushState({}, '', '/terminal')
+    window.location.hash = ''
+  })
+
   it('opens and closes the Coopro handoff modal', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -17,6 +22,16 @@ describe('Terminal app', () => {
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
+  })
+
+  it('routes internal pages through hashes on GitHub Pages', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'privacy' }))
+
+    expect(window.location.hash).toBe('#/privacy')
+    expect(screen.getByRole('heading', { name: 'CONFIDENTIALITÉ' })).toBeInTheDocument()
   })
 
   it('does not use browser storage, cookies, indexedDB, or tracker endpoints during issuing', async () => {

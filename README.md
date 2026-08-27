@@ -25,7 +25,7 @@ npm install
 npm run dev
 ```
 
-Ouvrir ensuite `/terminal` en local. Sur GitHub Pages, l’app est servie sous `/terminal/`.
+Ouvrir ensuite `/terminal` en local. Sur GitHub Pages, l’app est servie sous `/terminal/` et les pages internes utilisent le hash routing, par exemple `/terminal/#/privacy`.
 
 ## Tests
 
@@ -43,7 +43,7 @@ npm run build
 
 ## GitHub Pages
 
-Le workflow `.github/workflows/deploy.yml` construit l’application et publie `dist`. Après build, `dist/index.html` est copié en `dist/404.html` pour que les routes statiques comme `/terminal`, `/privacy` et `/data-not-product` restent servies par l’app React.
+Le workflow `.github/workflows/deploy.yml` construit l’application et publie `dist`. Après build, `dist/index.html` est copié en `dist/404.html` comme filet de sécurité, mais la navigation publique utilise `/#/` pour éviter les statuts 404 sur GitHub Pages.
 
 Configurer GitHub Pages sur “GitHub Actions”.
 
